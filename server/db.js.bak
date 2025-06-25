@@ -1,0 +1,49 @@
+// server/db.js
+cat > db.js << 'EOF'
+const path    = require('path');
+const sqlite3 = require('sqlite3').verbose();
+
+const dbPath = path.join(__dirname, 'threads.db');
+const db     = new sqlite3.Database(dbPath, err => {
+  if (err) console.error('DB open error:', err);
+  else console.log('Using database:', dbPath);
+});
+
+db.serialize(() => {
+  db.run(`DROP TABLE IF EXISTS project_threads;`);
+  db.run(`DROP TABLE IF EXISTS projects;`);
+  db.run(`DROP TABLE IF EXISTS threads;`);
+
+  db.run(`
+    CREATE TABLE threads (
+      id    INTEGER PRIMARY KEY AUTOINCREMENT,
+      code  TEXT    NOT NULL,
+      name  TEXT,
+      hex   TEXT,
+      owned INTEGER DEFAULT 0
+    );
+  `);
+
+  db.run(`
+    CREATE TABLE projects (
+      id          INTEGER PRIMARY KEY AUTOINCREMENT,
+      name        TEXT    NOT NULL,
+      description TEXT
+    );
+  `);
+
+  db.run(`
+    CREATE TABLE project_threads (
+      project_id INTEGER NOT NULL,
+      thread_id  INTEGER NOT NULL,
+      PRIMARY KEY (project_id, thread_id),
+      FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE,
+      FOREIGN KEY (thread_id)  REFERENCES threads(id)  ON DELETE CASCADE
+    );
+  `);
+
+  console.log('All tables are ready.');
+});
+
+module.exports = db;
+EOF

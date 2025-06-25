@@ -1,0 +1,15 @@
+[
+    {
+      "code": "310",
+      "name": "Black",
+      "hex": "#000000",
+      "owned": true
+    },
+    {
+      "code": "321",
+      "name": "Red",
+      "hex": "#C00040",
+      "owned": false
+    }
+  ]
+  

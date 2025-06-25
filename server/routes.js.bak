@@ -1,0 +1,127 @@
+cat > routes.js << 'EOF'
+console.log('⚙️  routes.js loaded');
+
+const express = require('express');
+const router  = express.Router();
+const db      = require('./db');
+
+// THREADS CRUD
+router.get('/threads', (req, res) => {
+  db.all("SELECT * FROM threads", [], (err, rows) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(rows);
+  });
+});
+
+router.post('/threads', (req, res) => {
+  const { code, name, hex, owned } = req.body;
+  db.run(
+    `INSERT INTO threads (code, name, hex, owned) VALUES (?, ?, ?, ?)`,
+    [code, name, hex, owned ? 1 : 0],
+    function(err) {
+      if (err) return res.status(500).json({ error: err.message });
+      res.json({ id: this.lastID });
+    }
+  );
+});
+
+router.put('/threads/:id', (req, res) => {
+  const { code, name, hex, owned } = req.body;
+  db.run(
+    `UPDATE threads SET code = ?, name = ?, hex = ?, owned = ? WHERE id = ?`,
+    [code, name, hex, owned ? 1 : 0, req.params.id],
+    function(err) {
+      if (err) return res.status(500).json({ error: err.message });
+      res.json({ id: Number(req.params.id), code, name, hex, owned });
+    }
+  );
+});
+
+router.delete('/threads/:id', (req, res) => {
+  db.run(`DELETE FROM threads WHERE id = ?`, [req.params.id], function(err) {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json({ deleted: this.changes });
+  });
+});
+
+// PROJECTS CRUD
+router.post('/projects', (req, res) => {
+  const { name, description } = req.body;
+  db.run(
+    `INSERT INTO projects (name, description) VALUES (?, ?)`,
+    [name, description],
+    function(err) {
+      if (err) return res.status(500).json({ error: err.message });
+      res.json({ id: this.lastID, name, description });
+    }
+  );
+});
+
+router.get('/projects', (req, res) => {
+  db.all(`SELECT * FROM projects`, [], (err, rows) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(rows);
+  });
+});
+
+router.get('/projects/:id', (req, res) => {
+  const pid = req.params.id;
+  db.get(`SELECT * FROM projects WHERE id = ?`, [pid], (err, project) => {
+    if (err || !project) return res.status(404).json({ error: err?.message || 'Not found' });
+    db.all(
+      `SELECT t.* FROM threads t
+       JOIN project_threads pt ON t.id = pt.thread_id
+       WHERE pt.project_id = ?`,
+      [pid],
+      (err, threads) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ ...project, threads });
+      }
+    );
+  });
+});
+
+router.put('/projects/:id', (req, res) => {
+  const { name, description } = req.body;
+  db.run(
+    `UPDATE projects SET name = ?, description = ? WHERE id = ?`,
+    [name, description, req.params.id],
+    function(err) {
+      if (err) return res.status(500).json({ error: err.message });
+      res.json({ id: Number(req.params.id), name, description });
+    }
+  );
+});
+
+router.delete('/projects/:id', (req, res) => {
+  db.run(`DELETE FROM projects WHERE id = ?`, [req.params.id], function(err) {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json({ deleted: this.changes });
+  });
+});
+
+// ASSIGN / UNASSIGN THREADS TO PROJECT
+router.post('/projects/:projectId/threads/:threadId', (req, res) => {
+  db.run(
+    `INSERT OR IGNORE INTO project_threads (project_id, thread_id) VALUES (?, ?)`,
+    [req.params.projectId, req.params.threadId],
+    function(err) {
+      if (err) return res.status(500).json({ error: err.message });
+      res.json({ projectId: Number(req.params.projectId), threadId: Number(req.params.threadId) });
+    }
+  );
+});
+
+router.delete('/projects/:projectId/threads/:threadId', (req, res) => {
+  db.run(
+    `DELETE FROM project_threads WHERE project_id = ? AND thread_id = ?`,
+    [req.params.projectId, req.params.threadId],
+    function(err) {
+      if (err) return res.status(500).json({ error: err.message });
+      res.json({ deleted: this.changes });
+    }
+  );
+});
+
+module.exports = router;
+EOF
