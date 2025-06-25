@@ -1,0 +1,19 @@
+.App {
+  font-family: 'Times New Roman', serif;
+  margin: 2rem;
+}
+
+.thread-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.thread-table th,
+.thread-table td {
+  border-bottom: 1px solid #ccc;
+  padding: 0.5rem;
+}
+
+.thread-table td {
+  vertical-align: middle;
+}

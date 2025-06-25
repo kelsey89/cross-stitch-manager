@@ -1,0 +1,151 @@
+/* client/src/custom.css */
+
+/*─────────────────────────────────────────────────────────────────────────────*/
+/* 1) Define a cohesive palette of CSS variables for easy theming             */
+/*─────────────────────────────────────────────────────────────────────────────*/
+:root {
+  /* Primary accent (used for main buttons/headers) */
+  --bs-primary:       #FF6F61;   /* Coral */
+
+  /* Secondary accent (used for secondary buttons/badges) */
+  --bs-secondary:     #1F9AA0;   /* Teal */
+
+  /* Tertiary highlight (used for cards, warnings, small highlights) */
+  --bs-light-orange:  #FFB74D;   /* Light Orange */
+
+  /* Off-white page background (very subtle tint so it’s not pure white) */
+  --bs-page-bg:       #FEFDFA;   /* Pale Lavender-Pink */
+}
+
+/*─────────────────────────────────────────────────────────────────────────────*/
+/* 2) Apply the page background and reserve space at the top for the logo     */
+/*─────────────────────────────────────────────────────────────────────────────*/
+body,
+.App {
+background-color: var(--bs-page-bg);
+padding-top: 60px; /* Leaves room so the fixed logo doesn’t overlap content */
+}
+
+/*─────────────────────────────────────────────────────────────────────────────*/
+/* 3) Position, size, and background the app logo in the top-left corner       */
+/*─────────────────────────────────────────────────────────────────────────────*/
+.app-logo {
+position: absolute;
+top: 16px;
+left: 16px;
+width: 120px;    /* Adjust as needed for your design */
+height: auto;
+z-index: 1000;
+
+/* Match logo background to page and give a subtle padding */
+background-color: var(--bs-page-bg);
+padding: 4px;
+border-radius: 4px;
+}
+
+/*─────────────────────────────────────────────────────────────────────────────*/
+/* 4) Add a stitched-style border around the navigation bar                     */
+/*─────────────────────────────────────────────────────────────────────────────*/
+.navbar {
+border: 3px dashed var(--bs-primary);
+border-radius: 8px;
+}
+
+/*─────────────────────────────────────────────────────────────────────────────*/
+/* 5) Headings use the primary accent color for consistency                    */
+/*─────────────────────────────────────────────────────────────────────────────*/
+h1,
+h2,
+h3 {
+color: var(--bs-primary);
+}
+
+/*─────────────────────────────────────────────────────────────────────────────*/
+/* 6) Button styles                                                            */
+/*─────────────────────────────────────────────────────────────────────────────*/
+
+/* Primary buttons (the main “call to action”) */
+.btn-primary {
+background-color: var(--bs-primary);
+border-color: var(--bs-primary);
+color: #FFFFFF; /* White text on coral */
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+background-color: #E65B56; /* Slightly darker coral on hover */
+border-color: #E65B56;
+color: #FFFFFF;
+}
+
+/* Secondary buttons (used for less-critical actions) */
+.btn-secondary {
+background-color: var(--bs-secondary);
+border-color: var(--bs-secondary);
+color: #FFFFFF; /* White text on teal */
+}
+
+.btn-secondary:hover,
+.btn-secondary:focus {
+background-color: #198F92; /* Slightly darker teal on hover */
+border-color: #198F92;
+color: #FFFFFF;
+}
+
+/* A small utility “special” button style, if you want a two-tone bordered button */
+.my-special-button {
+background-color: var(--bs-primary);
+color: #FFFFFF;
+border: 2px solid var(--bs-secondary);
+border-radius: 4px;
+padding: 0.5rem 1rem;
+}
+
+.my-special-button:hover,
+.my-special-button:focus {
+background-color: var(--bs-secondary);
+border-color: var(--bs-primary);
+color: #FFFFFF;
+}
+
+/*─────────────────────────────────────────────────────────────────────────────*/
+/* 7) Badges and alerts                                                         */
+/*─────────────────────────────────────────────────────────────────────────────*/
+
+/* Secondary badge, e.g., <span class="badge badge-secondary">New</span> */
+.badge-secondary {
+background-color: var(--bs-secondary);
+color: #FFFFFF;
+}
+
+/* Warning alert or highlight (uses the light-orange color) */
+.alert-warning {
+background-color: var(--bs-light-orange);
+color: #000000; /* Black text for readability on light orange */
+}
+
+/*─────────────────────────────────────────────────────────────────────────────*/
+/* 8) Card custom class for soft “highlight”                                     */
+/*─────────────────────────────────────────────────────────────────────────────*/
+
+/* Use this on any <Card className="card-custom"> to get a light-orange background */
+.card-custom {
+background-color: var(--bs-light-orange);
+border: none;
+}
+
+/*─────────────────────────────────────────────────────────────────────────────*/
+/* 9) Miscellaneous table styling (optional)                                    */
+/*─────────────────────────────────────────────────────────────────────────────*/
+/* 
+ If you’d like your thread‐table headers to stand out, you could add something like:
+*/
+.thread-table th {
+background-color: var(--bs-primary);
+color: #FFFFFF;
+}
+
+/* And maybe zebra-striped rows, for readability: */
+.thread-table tr:nth-child(even) {
+background-color: #ffffff; /* Pure white on alternating rows */
+}
